@@ -11,9 +11,11 @@ RM	= rm
 ifeq ($(UNAME_S),Darwin)
 	FAST_FADING_LIBRARY = libfastfading.dylib
 	LIBS = -larmadillo -lfastfading
+	IS_MAC = -D_MACOS_
 else
 	FAST_FADING_LIBRARY = fast-fading.so
 	LIBS = -larmadillo
+	IS_MAC =
 endif
 
 FAST_FADING_PATH = src/channel/propagation-model/FastFadingRealization
@@ -30,12 +32,12 @@ all: Debug
 .obj/Debug/%.o: %.cpp
 	@mkdir -p $(@D)
 	@echo $<
-	@$(CXX) -O0 -g3 -D_GLIBCXX_DEBUG -DDEBUG $(CXXFLAGS) -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -MT"$(@:%.o=%.d)" $< -o $@
+	@$(CXX) -O0 -g3 -D_GLIBCXX_DEBUG -DDEBUG $(IS_MAC) $(CXXFLAGS) -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -MT"$(@:%.o=%.d)" $< -o $@
 
 .obj/Release/%.o: %.cpp
 	@mkdir -p $(@D)
 	@echo $<
-	@$(CXX) -O2     $(CXXFLAGS) -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -MT"$(@:%.o=%.d)" $< -o $@
+	@$(CXX) -O2 $(IS_MAC) $(CXXFLAGS) -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -MT"$(@:%.o=%.d)" $< -o $@
 
 $(FAST_FADING_LIBRARY): $(OBJ_FAST_FADING)
 ifeq ($(UNAME_S),Darwin)

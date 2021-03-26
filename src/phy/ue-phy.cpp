@@ -362,7 +362,13 @@ DEBUG_LOG_END
                         }
                       arma::cx_mat HHTN = avgPower * precodedH0 * arma::trans(precodedH0)
                                         + pow(10,noise_interference/10) * arma::eye<arma::mat>( nbRxAntennas, nbRxAntennas );
+// MV:
+#ifndef _MACOS_
                       arma::cx_mat W = arma::inv( HHTN, true ) * sqrt(avgPower) * precodedH0;
+#else
+                      cout << "MV_DEB: " << "fix me:" << __LINE__ << __FILE__ << endl;
+                      arma::cx_mat W = arma::cx_mat(0);//arma::inv( HHTN /*, true */ ) * sqrt(avgPower) * precodedH0;
+#endif
                       arma::cx_mat correlation = arma::trans(W)*sqrt(avgPower)*precodedH0;
                       arma::cx_mat D = arma::diagmat(correlation);
                       arma::cx_mat Iself = correlation - D;
